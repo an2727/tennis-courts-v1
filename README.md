@@ -10,12 +10,12 @@ The actual code has the below user stories already implemented. You should compl
 **1. As a User I want to be able to book a reservation for one or more tennis court at a given date schedule**
 
 2. As a User I want to be able to see what time slots are free 
-3. As a User I want to be able to cancel a reservation 
-4. As a User I want to be able to reschedule a reservation 
+3. As a User I want to be able to cancel a reservation   --  ** Done **
+4. As a User I want to be able to reschedule a reservation -- ** Done **
 
 **5. As a Tennis Court Admin, I want to be able to Create/Update/Delete/Find by id/Find by name/List all the guests**
 
-6. As a Tennis Court Admin, I want to be able to create schedule slots for a given tennis court
+6. As a Tennis Court Admin, I want to be able to create schedule slots for a given tennis court  -- ** Done **
 
 **7. As a Tennis Court Admin, I want to charge a reservation deposit of $10 to the user, charged per court, which is refunded upon completion of their match, so that Users don’t abuse my schedule**
 
@@ -30,7 +30,7 @@ The actual code has the below user stories already implemented. You should compl
  
  **- Implement all the missing Restful swagger statements and the API paths to the controllers**
  
- **- Check why rescheduleReservation in the class ReservationService.java is not working correctly and fix it**
+ **- Check why rescheduleReservation in the class ReservationService.java is not working correctly and fix it** -- **Fixed**
  
 # Assumptions 
 ●	No authentication/authorization system is required 

@@ -1,7 +1,11 @@
 package com.tenniscourts.reservations;
 
 import com.tenniscourts.exceptions.EntityNotFoundException;
-import lombok.AllArgsConstructor;
+import com.tenniscourts.schedules.ScheduleDTO;
+import com.tenniscourts.schedules.ScheduleRepository;
+import com.tenniscourts.schedules.ScheduleService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -9,16 +13,30 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 @Service
-@AllArgsConstructor
 public class ReservationService {
-
+	
+	
     private final ReservationRepository reservationRepository;
+    
+    private final ScheduleService scheduleService;
 
     private final ReservationMapper reservationMapper;
+    
+    @Autowired
+    public ReservationService(final ReservationRepository reservationRepository, final ReservationMapper reservationMapper,final ScheduleService scheduleService) {
+    	this.reservationMapper = reservationMapper;
+    	this.reservationRepository = reservationRepository;
+    	this.scheduleService = scheduleService;
+    }
 
     public ReservationDTO bookReservation(CreateReservationRequestDTO createReservationRequestDTO) {
-        throw new UnsupportedOperationException();
+        //throw new UnsupportedOperationException();
+    	Reservation reservation = reservationMapper.map(createReservationRequestDTO);
+    	reservation.setValue(new BigDecimal(10)); 
+    	ReservationDTO reservationDTO = reservationMapper.map(reservationRepository.saveAndFlush(reservation));
+    	return reservationDTO;
     }
+    
 
     public ReservationDTO findReservation(Long reservationId) {
         return reservationRepository.findById(reservationId).map(reservationMapper::map).orElseThrow(() -> {
@@ -55,6 +73,7 @@ public class ReservationService {
         if (!ReservationStatus.READY_TO_PLAY.equals(reservation.getReservationStatus())) {
             throw new IllegalArgumentException("Cannot cancel/reschedule because it's not in ready to play status.");
         }
+        
 
         if (reservation.getSchedule().getStartDateTime().isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("Can cancel/reschedule only future dates.");
@@ -63,7 +82,6 @@ public class ReservationService {
 
     public BigDecimal getRefundValue(Reservation reservation) {
         long hours = ChronoUnit.HOURS.between(LocalDateTime.now(), reservation.getSchedule().getStartDateTime());
-
         if (hours >= 24) {
             return reservation.getValue();
         }
@@ -82,7 +100,6 @@ public class ReservationService {
 
         previousReservation.setReservationStatus(ReservationStatus.RESCHEDULED);
         reservationRepository.save(previousReservation);
-
         ReservationDTO newReservation = bookReservation(CreateReservationRequestDTO.builder()
                 .guestId(previousReservation.getGuest().getId())
                 .scheduleId(scheduleId)

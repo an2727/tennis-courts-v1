@@ -2,6 +2,8 @@ package com.tenniscourts.schedules;
 
 import com.tenniscourts.tenniscourts.TennisCourtDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +15,7 @@ import java.time.LocalDateTime;
 public class ScheduleDTO {
 
     private Long id;
-
+    @JsonIgnore
     private TennisCourtDTO tennisCourt;
 
     @NotNull
